@@ -48,6 +48,7 @@ class UniqloModule:
 
         res = json.loads(r.text)['resp'][1][0]
 
+        uniqlo_official_base = os.getenv['UNIQLO_OFFICIAL_BASE']
         info = {
             "origin_price": res['originPrice'],
             "prices": res['prices'],
@@ -68,7 +69,7 @@ class UniqloModule:
 
 (測試）當前使用者：{self.user_id}
 
-參考: {os.getenv['UNIQLO_OFFICIAL_BASE']}{info['product_code']}"""
+參考: {uniqlo_official_base}{info['product_code']}"""
         reply_message = TextSendMessage(text=msg)
         return reply_message
 
