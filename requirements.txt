@@ -1,0 +1,7 @@
+Flask==1.1.2
+line-bot-sdk==1.16.0
+gunicorn==20.0.4
+aiohttp==3.8.1
+dataframe-image==0.1.1
+python-dotenv==0.19.2
+psycopg2==2.9.2
