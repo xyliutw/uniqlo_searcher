@@ -49,10 +49,10 @@ class UniqloModule:
         res = json.loads(r.text)['resp'][1][0]
 
         info = {
-            "origin_price": res['originPrice'],
-            "price": res['prices'][0],
-            "min_price": res['minPrice'],
-            "max_price": res['maxPrice'],
+            "origin_price": int(float(res['originPrice'])),
+            "price": int(float(res['prices'][0])),
+            "min_price": int(float(res['minPrice'])),
+            "max_price": int(float(res['maxPrice'])),
             "name": res['name'],
             "product_code": res['productCode'],
             "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
