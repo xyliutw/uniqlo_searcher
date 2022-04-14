@@ -9,6 +9,6 @@ def refactor_default_flex_message(template, info):
     template['body']['contents'][1]['contents'][2]['contents'][1]['text'] = f"NT${info['origin_price']}"
 
     template['footer']['contents'][0]['action']['uri'] = info['official_link']
-    template['footer']['contents'][1]['action']['uri'] = ''
+    template['footer']['contents'][1]['action']['uri'] = info['official_link']
 
     return template
