@@ -1,164 +1,180 @@
 {
     "type": "bubble",
+    "size": "kilo",
+    "direction": "ltr",
     "hero": {
-        "type": "image",
-        "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
-        "size": "full",
-        "aspectRatio": "20:13",
-        "aspectMode": "cover",
-        "action": {
-            "type": "uri",
-            "uri": "http://linecorp.com/"
-        }
+      "type": "image",
+      "url": "https://www.uniqlo.com/tw/hmall/test/u0000000012379/main/other2/480/3.jpg",
+      "size": "full",
+      "aspectRatio": "1:1",
+      "aspectMode": "cover",
+      "action": {
+        "type": "uri",
+        "uri": "http://linecorp.com/"
+      },
+      "position": "relative",
+      "margin": "none"
     },
     "body": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "text": "U 寬版襯衫式外套",
+          "weight": "bold",
+          "size": "lg",
+          "margin": "md",
+          "style": "normal",
+          "decoration": "none",
+          "position": "relative",
+          "align": "center",
+          "offsetTop": "sm",
+          "offsetBottom": "none",
+          "offsetStart": "none",
+          "offsetEnd": "none"
+        },
+        {
+          "type": "box",
+          "layout": "vertical",
+          "margin": "lg",
+          "spacing": "sm",
+          "contents": [
             {
-                "type": "text",
-                "text": "BP Test",
-                "weight": "bold",
-                "size": "xl"
+              "type": "box",
+              "layout": "baseline",
+              "spacing": "sm",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "最新價格：",
+                  "color": "#DC143C",
+                  "size": "md",
+                  "flex": 5,
+                  "margin": "none",
+                  "weight": "bold",
+                  "style": "normal",
+                  "decoration": "none"
+                },
+                {
+                  "type": "text",
+                  "wrap": true,
+                  "color": "#DC143C",
+                  "size": "md",
+                  "flex": 9,
+                  "text": "NT$990",
+                  "margin": "none"
+                }
+              ]
             },
             {
-                "type": "box",
-                "layout": "baseline",
-                "margin": "md",
-                "contents": [
-                    {
-                        "type": "icon",
-                        "size": "sm",
-                        "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png"
-                    },
-                    {
-                        "type": "icon",
-                        "size": "sm",
-                        "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png"
-                    },
-                    {
-                        "type": "icon",
-                        "size": "sm",
-                        "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png"
-                    },
-                    {
-                        "type": "icon",
-                        "size": "sm",
-                        "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png"
-                    },
-                    {
-                        "type": "icon",
-                        "size": "sm",
-                        "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gray_star_28.png"
-                    },
-                    {
-                        "type": "text",
-                        "text": "4.0",
-                        "size": "sm",
-                        "color": "#999999",
-                        "margin": "md",
-                        "flex": 0
-                    }
-                ]
+              "type": "box",
+              "layout": "baseline",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "歷史最低：",
+                  "weight": "bold",
+                  "color": "#aaaaaa",
+                  "flex": 5,
+                  "margin": "none",
+                  "size": "md"
+                },
+                {
+                  "type": "text",
+                  "text": "NT$990",
+                  "flex": 9,
+                  "margin": "none",
+                  "size": "md",
+                  "color": "#aaaaaa",
+                  "wrap": true
+                }
+              ]
             },
             {
-                "type": "box",
-                "layout": "vertical",
-                "margin": "lg",
-                "spacing": "sm",
-                "contents": [
-                    {
-                        "type": "box",
-                        "layout": "baseline",
-                        "spacing": "sm",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "當日最高",
-                                "color": "#aaaaaa",
-                                "size": "sm",
-                                "flex": 1
-                            },
-                            {
-                                "type": "text",
-                                "wrap": true,
-                                "color": "#666666",
-                                "size": "sm",
-                                "flex": 2,
-                                "text": "''"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "box",
-                        "layout": "baseline",
-                        "spacing": "sm",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "當日最低",
-                                "color": "#aaaaaa",
-                                "size": "sm",
-                                "flex": 1
-                            },
-                            {
-                                "type": "text",
-                                "text": "''",
-                                "wrap": true,
-                                "color": "#666666",
-                                "size": "sm",
-                                "flex": 2
-                            }
-                        ]
-                    },
-                    {
-                        "type": "box",
-                        "layout": "baseline",
-                        "spacing": "sm",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "當前價格",
-                                "color": "#aaaaaa",
-                                "size": "sm",
-                                "flex": 1,
-                                "margin": "none"
-                            },
-                            {
-                                "type": "text",
-                                "text": "123",
-                                "wrap": true,
-                                "color": "#666666",
-                                "size": "lg",
-                                "flex": 2,
-                                "weight": "regular"
-                            }
-                        ]
-                    }
-                ]
+              "type": "box",
+              "layout": "baseline",
+              "spacing": "sm",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "商品原價：",
+                  "color": "#aaaaaa",
+                  "size": "md",
+                  "flex": 5,
+                  "margin": "none",
+                  "weight": "bold"
+                },
+                {
+                  "type": "text",
+                  "wrap": true,
+                  "color": "#aaaaaa",
+                  "size": "md",
+                  "flex": 9,
+                  "text": "NT$2490",
+                  "margin": "none"
+                }
+              ]
             }
-        ]
+          ],
+          "position": "relative"
+        }
+      ],
+      "position": "relative",
+      "spacing": "none",
+      "margin": "none"
     },
     "footer": {
-        "type": "box",
-        "layout": "vertical",
-        "spacing": "sm",
-        "contents": [
-            {
-                "type": "button",
-                "style": "link",
-                "height": "sm",
-                "action": {
-                    "type": "uri",
-                    "label": "SHARE",
-                    "uri": "https://liff.line.me/1656705326-24dwqXM1/8af5a4204ce04a3ea139e71c4c41741b.html?key1=value1"
-                }
-            },
-            {
-                "type": "spacer",
-                "size": "sm"
-            }
-        ],
-        "flex": 0
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "sm",
+      "contents": [
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "uri",
+            "label": "前往官網",
+            "uri": "https://www.uniqlo.com/tw/zh_TW/product-detail.html?productCode=u0000000012379"
+          },
+          "margin": "md",
+          "offsetTop": "none",
+          "offsetBottom": "none",
+          "offsetStart": "none",
+          "offsetEnd": "none"
+        },
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "uri",
+            "label": "追蹤此商品",
+            "uri": "https://linecorp.com"
+          },
+          "margin": "md"
+        },
+        {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [],
+          "margin": "sm"
+        }
+      ],
+      "flex": 0
+    },
+    "action": {
+      "type": "postback",
+      "label": "action",
+      "data": "hello"
+    },
+    "styles": {
+      "header": {
+        "separator": true
+      },
+      "footer": {
+        "separator": true
+      }
     }
-}
+  }

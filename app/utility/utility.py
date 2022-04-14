@@ -1,30 +1,14 @@
-def refactor_default_flex_message(template, stock_info, stock_name, stock_id):
-    template["body"]["contents"][0]["text"] = f"{stock_name} ({stock_id})"
+def refactor_default_flex_message(template, info):
+    template['hero']['url'] = info['main_pic']
+    template['hero']['action']['uri'] = info['official_link']
 
-    template["body"]["contents"][2]["contents"][0]["contents"][1][
-        "text"
-    ] = f"{stock_info.get('max')}"
-    template["body"]["contents"][2]["contents"][1]["contents"][1][
-        "text"
-    ] = f"{stock_info.get('min')}"
+    template['body']['contents'][0]['text'] = info['name']
 
-    if stock_info["new_diff"] < 0:
-        template["body"]["contents"][2]["contents"][2]["contents"][1][
-            "text"
-        ] = f"{stock_info['new_close']}  {stock_info['new_diff']}({stock_info['new_diff_perc']}%)"
-        template["body"]["contents"][2]["contents"][2]["contents"][1][
-            "color"
-        ] = "#00CC00"
-    else:
-        template["body"]["contents"][2]["contents"][2]["contents"][1][
-            "text"
-        ] = f"{stock_info['new_close']}  +{stock_info['new_diff']}({stock_info['new_diff_perc']}%)"
-        template["body"]["contents"][2]["contents"][2]["contents"][1][
-            "color"
-        ] = "#CC0000"
-    template["footer"]["contents"][0]["action"]["label"] = "Reference"
-    template["footer"]["contents"][0]["action"][
-        "uri"
-    ] = f"https://tw.stock.yahoo.com/quote/{stock_id}/technical-analysis"
+    template['body']['contents'][1]['contents'][0]['contents'][1]['text'] = f"NT${info['price']}"
+    template['body']['contents'][1]['contents'][1]['contents'][1]['text'] = f"NT${info['min_price']}"
+    template['body']['contents'][1]['contents'][2]['contents'][1]['text'] = f"NT${info['origin_price']}"
+
+    template['footer']['contents'][0]['action']['uri'] = info['official_link']
+    template['footer']['contents'][1]['action']['uri'] = ''
 
     return template

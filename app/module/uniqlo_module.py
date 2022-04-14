@@ -50,33 +50,23 @@ class UniqloModule:
 
         info = {
             "origin_price": res['originPrice'],
-            "prices": res['prices'],
+            "price": res['prices'][0],
             "min_price": res['minPrice'],
             "max_price": res['maxPrice'],
             "name": res['name'],
             "product_code": res['productCode'],
-            "main_pic": res['mainPic'],
-            "product_name": res['productName']
+            "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
+            "product_name": res['productName'],
+            "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}"
         }
 
-        msg = f"""商品名稱: {info['name']}
+        user_id = self.user_id
 
-商品原價:{info['origin_price']}
-歷史最低:{info['min_price']}
-
-• 當前價格: {info['prices'][0]}
-
-(測試）當前使用者：{self.user_id}
-
-參考: {os.getenv('UNIQLO_OFFICIAL_BASE')}{info['product_code']}"""
-        reply_message = TextSendMessage(text=msg)
+        template = json.load(
+        open("app/template/default_flex.json", "r", encoding="utf-8")
+        )
+        flexMessage = refactor_default_flex_message(
+            template, info
+        )
+        reply_message = FlexSendMessage(info['name'], flexMessage)
         return reply_message
-
-        # template = json.load(
-        # open("app/template/default_flex.json", "r", encoding="utf-8")
-        # )
-        # flexMessage = refactor_default_flex_message(
-        #     template, sumDict, stock_name, stock_id
-        # )
-        # reply_message = FlexSendMessage(stock_id, flexMessage)
-        # return reply_message

@@ -8,5 +8,5 @@ class UniqloService:
         self.module = UniqloModule(self.user_id, self.message)
 
     def get_current_price(self):
-        stock_ids = self.module.get_current_price()
-        return stock_ids
+        flex_message = self.module.get_current_price()
+        return flex_message
