@@ -19,8 +19,12 @@ class UniqloModule:
 
     def get_current_price(self):
         name, flexMessage = self.get_product_price_from_website()
-        reply_message = FlexSendMessage(name, flexMessage)
-        return reply_message
+        if name == 0 and flexMessage == 0:
+            reply_message = TextSendMessage(text="查無此商品")
+            return reply_message
+        else:
+            reply_message = FlexSendMessage(name, flexMessage)
+            return reply_message
 
     def get_product_price_from_website(self, user_id = None, product_id = None):
         message = product_id if product_id is not None else self.message
@@ -59,8 +63,7 @@ class UniqloModule:
         res = json.loads(r.text)
 
         if(res['resp'][2]['productSum'] == 0):
-            reply_message = TextSendMessage(text="查無此商品")
-            return reply_message
+            return 0, 0
 
         res = res['resp'][1][0]
 
