@@ -14,8 +14,7 @@ load_dotenv()
 class UniqloModule:
     def __init__(self, user_id, message):
         self.user_id = user_id
-        self.message = message.strip()
-
+        self.message = message
 
     def get_current_price(self):
         data = {
