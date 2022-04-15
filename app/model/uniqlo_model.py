@@ -17,3 +17,13 @@ class UniqloModel(PostgresManager):
             
         self.conn.commit()
         cursor.close()
+    
+    def get_send_list(self):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f"SELECT * FROM subscription"
+        )
+        self.conn.commit()
+        result = cursor.fetchall()
+        cursor.close()
+        return result
