@@ -10,3 +10,11 @@ class UniqloService:
     def get_current_price(self):
         flex_message = self.module.get_current_price()
         return flex_message
+
+    def subscribe(self, data):
+        result = self.module.subscribe(data)
+        return result
+
+    def send_notification(self):
+        result = self.module.send_notification()
+        return result

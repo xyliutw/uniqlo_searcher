@@ -17,17 +17,13 @@ handler = WebhookHandler(os.getenv("CHANNEL_SECRET"))
 app = Flask(__name__)
 
 
-@app.route("/text", methods=["GET"])
-def text():
-    print(request.headers)
-    print("---")
-    print(request.args.to_dict())
-    print("---")
+@app.route("/subscribe", methods=["GET"])
+def subscribe():
     # get request body as text
-    body = request.get_data(as_text=True)
-    print(body)
+    data = request.args.to_dict()
+    reply_message = UniqloService().subscribe(data)
 
-    return "<html><body><h1>Hello World</h1></body></html>"
+    return f"<html><body><h1>{reply_message}</h1></body></html>"
 
 
 @app.route("/callback", methods=["POST"])
@@ -55,9 +51,9 @@ def callback():
 def handle_message(event):
     user_id = event.source.user_id
 
-    if event.message.text == "發送訊息":
+    if event.message.text == "發送每日通知訊息":
         ## DO SEND NOTIFICATION TO EACH USER
-        print()
+        reply_message = UniqloService().send_notification()
     elif event.message.text.isnumeric():
         reply_message = UniqloService(
             user_id=user_id,
