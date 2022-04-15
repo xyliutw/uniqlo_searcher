@@ -46,7 +46,13 @@ class UniqloModule:
         } 
         r = requests.post(os.getenv('UNIQLO_SEARCH_URL'), headers=header, json=data)
 
-        res = json.loads(r.text)['resp'][1][0]
+        res = json.loads(r.text)
+
+        if(res['resp'][2]['productSum'] == 0):
+            reply_message = TextSendMessage(text="查無此商品")
+            return reply_message
+
+        res = res['resp'][1][0]
 
         info = {
             "origin_price": int(float(res['originPrice'])),
