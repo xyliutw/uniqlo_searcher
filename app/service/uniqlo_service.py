@@ -22,3 +22,7 @@ class UniqloService:
     def send_notification(self):
         result = self.module.send_notification()
         return result
+    
+    def get_subscription_list(self):
+        result = self.module.get_subscription_list()
+        return result

@@ -25,7 +25,7 @@ class UniqloModel(PostgresManager):
         print(f"Processing: user_id: {user_id}, product_id: {product_id}")
         cursor = self.conn.cursor()
         cursor.execute(
-            f"DELETE FROM subscription WHERE user_id = '{user_id}' AND product_id = '{product_id}';"
+            f"DELETE FROM subscription WHERE uid = '{user_id}' AND product_id = '{product_id}';"
         )
             
         self.conn.commit()
@@ -35,6 +35,16 @@ class UniqloModel(PostgresManager):
         cursor = self.conn.cursor()
         cursor.execute(
             f"SELECT * FROM subscription"
+        )
+        self.conn.commit()
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+    def get_user_subscription_list(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f"SELECT * FROM subscription WHERE uid = '{user_id}'"
         )
         self.conn.commit()
         result = cursor.fetchall()

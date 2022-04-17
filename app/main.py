@@ -25,7 +25,7 @@ def subscribe():
 
     return f"<html><body><h1>{reply_message}</h1></body></html>"
 
-@app.route("/subscribe", methods=["GET"])
+@app.route("/unsubscribe", methods=["GET"])
 def unsubscribe():
     # get request body as text
     data = request.args.to_dict()
@@ -66,6 +66,11 @@ def handle_message(event):
             user_id=user_id,
             message=str(event.message.text)
         ).get_current_price()
+    elif event.message.text == "我的訂閱清單":
+        reply_message = UniqloService(
+            user_id=user_id,
+            message=str(event.message.text)
+        ).get_subscription_list()
     else:
         reply_message = TextSendMessage(
             text="Unknown command, please contact ericlynn0912@gmail.com to get more information."
