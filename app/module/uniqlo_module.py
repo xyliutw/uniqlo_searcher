@@ -18,7 +18,8 @@ class UniqloModule:
         self.message = message
 
     def get_current_price(self):
-        name, flexMessage = self.get_product_price_from_website()
+        info, flexMessage = self.get_product_price_from_website()
+        name = info['name']
         if name == 0 and flexMessage == 0:
             reply_message = TextSendMessage(text="查無此商品")
             return reply_message
@@ -87,7 +88,7 @@ class UniqloModule:
         flexMessage = refactor_default_flex_message(
             template, info, unsubscribe
         )
-        return info['name'], flexMessage
+        return info, flexMessage
 
     def subscribe(self, data):
         if(data.get('uid') is None or data.get('product_id') is None):
@@ -121,8 +122,9 @@ class UniqloModule:
 
         send_candidate = defaultdict(list)
         for user_info in user_list:
-            name, flex_message = self.get_product_price_from_website(user_info[1], user_info[2] , unsubscribe=True)
-            send_candidate[user_info[1]].append(flex_message)
+            info, flex_message = self.get_product_price_from_website(user_info[1], user_info[2] , unsubscribe=True)
+            if info['price'] < info['origin_price']:
+                send_candidate[user_info[1]].append(flex_message)
 
         for user_id, flex_messages in send_candidate.items():
             # send message here
@@ -168,7 +170,7 @@ class UniqloModule:
 
         items = []
         for user_info in user_list:
-            name, flex_message = self.get_product_price_from_website(user_info[1], user_info[2], unsubscribe=True)
+            info, flex_message = self.get_product_price_from_website(user_info[1], user_info[2], unsubscribe=True)
             items.append(flex_message)
 
         flexMessage = self.build_subscription_flex_message(items)
