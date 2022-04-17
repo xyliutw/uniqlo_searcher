@@ -66,7 +66,7 @@ def handle_message(event):
             user_id=user_id,
             message=str(event.message.text)
         ).get_current_price()
-    elif event.message.text == "我的訂閱清單":
+    elif event.message.text == "我的追蹤清單":
         reply_message = UniqloService(
             user_id=user_id,
             message=str(event.message.text)
