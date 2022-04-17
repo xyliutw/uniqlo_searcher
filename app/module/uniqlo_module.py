@@ -102,6 +102,20 @@ class UniqloModule:
             return "訂閱功能發生錯誤，請聯絡管理員"
         return "訂閱成功👍"
     
+    def unsubscribe(self, data):
+        if(data.get('uid') is None or data.get('product_id') is None):
+            return "訂閱功能發生錯誤，請聯絡管理員"
+
+        try:
+            uniqlo_model = UniqloModel()
+            uniqlo_model.remove_subscription(data.get('uid'), data.get('product_id'))
+        except psycopg2.errors.UniqueViolation:
+            return "此商品您已訂閱"
+        except Exception as e:
+            print(e)
+            return "訂閱功能發生錯誤，請聯絡管理員"
+        return "訂閱成功👍"
+    
     def send_notification(self):
         uniqlo_model = UniqloModel()
         user_list = uniqlo_model.get_send_list()

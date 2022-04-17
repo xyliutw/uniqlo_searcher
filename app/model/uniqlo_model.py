@@ -18,6 +18,19 @@ class UniqloModel(PostgresManager):
         self.conn.commit()
         cursor.close()
     
+    def remove_subscription(self, user_id, product_id):
+        """
+        :return:
+        """
+        print(f"Processing: user_id: {user_id}, product_id: {product_id}")
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f"DELETE FROM subscription WHERE user_id = '{user_id}' AND product_id = '{product_id}';"
+        )
+            
+        self.conn.commit()
+        cursor.close()
+    
     def get_send_list(self):
         cursor = self.conn.cursor()
         cursor.execute(

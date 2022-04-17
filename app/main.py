@@ -25,6 +25,13 @@ def subscribe():
 
     return f"<html><body><h1>{reply_message}</h1></body></html>"
 
+@app.route("/subscribe", methods=["GET"])
+def unsubscribe():
+    # get request body as text
+    data = request.args.to_dict()
+    reply_message = UniqloService().unsubscribe(data)
+
+    return f"<html><body><h1>{reply_message}</h1></body></html>"
 
 @app.route("/callback", methods=["POST"])
 def callback():
