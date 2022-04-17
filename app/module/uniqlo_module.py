@@ -171,7 +171,6 @@ class UniqloModule:
             name, flex_message = self.get_product_price_from_website(user_info[1], user_info[2], unsubscribe=True)
             items.append(flex_message)
 
-        return items
         flexMessage = self.build_subscription_flex_message(items)
         reply_message = FlexSendMessage('訂閱清單', flexMessage)
         return reply_message
