@@ -23,7 +23,7 @@ def subscribe():
     data = request.args.to_dict()
     reply_message = UniqloService().subscribe(data)
 
-    return f'<html><body><h1>{reply_message}<br>等待 3 秒後跳轉...</h1><script>setTimeout(function(){{}},3000);window.location.href = "https://line.me/R/"; window.close();</script></body></html>'
+    return f'<html><body><h1>{reply_message}<br>等待 3 秒後跳轉...</h1><script>setTimeout(function(){{window.location.href = "https://line.me/R/";}},3000);</script></body></html>'
 
 @app.route("/unsubscribe", methods=["GET"])
 def unsubscribe():
@@ -31,7 +31,7 @@ def unsubscribe():
     data = request.args.to_dict()
     reply_message = UniqloService().unsubscribe(data)
 
-    return f'<html><body><h1>{reply_message}<br>等待 3 秒後跳轉...</h1><script>setTimeout(function(){{}},3000);window.location.href = "https://line.me/R/"; window.close();</script></body></html>'
+    return f'<html><body><h1>{reply_message}<br>等待 3 秒後跳轉...</h1><script>setTimeout(function(){{window.location.href = "https://line.me/R/";}},3000);</script></body></html>'
 
 @app.route("/callback", methods=["POST"])
 def callback():
