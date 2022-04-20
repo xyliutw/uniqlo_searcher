@@ -19,11 +19,11 @@ class UniqloModule:
 
     def get_current_price(self):
         info, flexMessage = self.get_product_price_from_website()
-        name = info['name']
-        if name == 0 and flexMessage == 0:
+        if info == 0:
             reply_message = TextSendMessage(text="查無此商品")
             return reply_message
         else:
+            name = info['name']
             reply_message = FlexSendMessage(name, flexMessage)
             return reply_message
 
