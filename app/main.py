@@ -23,7 +23,8 @@ def subscribe():
     data = request.args.to_dict()
     reply_message = UniqloService().subscribe(data)
 
-    return f"<html><body><h1>{reply_message}</h1></body></html>"
+    return f'<html><body><h1>{reply_message}</h1><script>window.location.href = "https://line.me/R/"';
+</script></body></html>"
 
 @app.route("/unsubscribe", methods=["GET"])
 def unsubscribe():
@@ -31,7 +32,7 @@ def unsubscribe():
     data = request.args.to_dict()
     reply_message = UniqloService().unsubscribe(data)
 
-    return f"<html><body><h1>{reply_message}</h1></body></html>"
+    return f'<html><body><h1>{reply_message}</h1><script>window.location.href = "https://line.me/R/"';
 
 @app.route("/callback", methods=["POST"])
 def callback():
