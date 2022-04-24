@@ -163,7 +163,7 @@ class UniqloModule:
         uniqlo_model = UniqloModel()
         for user_info in user_list:
             info, flex_message = self.get_price(user_info[1], user_info[2] , unsubscribe=True)
-            if info['last_notify_price'] is None or info['price'] < info['last_notify_price']:
+            if (info['last_notify_price'] is None or info['price'] < info['last_notify_price']) and info['price'] < info['origin_price']:
                 send_candidate[user_info[1]].append(flex_message)
                 try:
                     uniqlo_model.update_last_notify_price(info['product_id'], info['price'])
