@@ -108,10 +108,9 @@ class UniqloModule:
             low_price = self.get_product_low_price(info['product_code'])
             low_price = int(float(low_price))
         
-            if( low_price< int(info['min_price'])):
+            if( low_price < int(info['min_price'])):
                 info['min_price'] = low_price
-            
-            print(f"lowP: {low_price} <> craw: {info['min_price']}")
+
             
             uniqlo_model.add_product_data(info) 
 
@@ -150,7 +149,10 @@ class UniqloModule:
             return "訂閱功能發生錯誤，請聯絡管理員"
         return "取消訂閱成功👍"
     
-    def send_notification(self):
+    def send_notification(self, user_id):
+        if user_id != os.getenv('ADMIN_UID'):
+            reply_message = TextSendMessage(text="Unknown command, please contact ericlynn0912@gmail.com to get more information.")
+            return reply_message
         uniqlo_model = UniqloModel()
         user_list = uniqlo_model.get_send_list()
 
