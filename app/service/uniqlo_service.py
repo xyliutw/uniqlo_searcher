@@ -22,6 +22,10 @@ class UniqloService:
     def unsubscribe(self, data):
         result = self.module.unsubscribe(data)
         return result
+    
+    def unsubscribe_v2(self, data):
+        result = self.module.unsubscribe_v2(data)
+        return result
 
     def send_notification(self):
         result = self.module.send_notification(self.user_id)

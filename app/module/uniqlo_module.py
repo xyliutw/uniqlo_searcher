@@ -136,6 +136,19 @@ class UniqloModule:
             return "訂閱功能發生錯誤，請聯絡管理員"
         return "取消訂閱成功👍"
     
+    def unsubscribe_v2(self, data):
+        params = parse.parse_qs(parse.urlparse(data.get('liff.state')).query)
+        if(params.get('uid') is None or params.get('product_id') is None):
+            return "訂閱功能發生錯誤，請聯絡管理員"
+
+        try:
+            uniqlo_model = UniqloModel()
+            uniqlo_model.remove_subscription(params.get('uid')[0], params.get('product_id')[0])
+        except Exception as e:
+            print(e)
+            return "訂閱功能發生錯誤，請聯絡管理員"
+        return "取消訂閱成功👍"
+    
     def send_notification(self, user_id):
         if user_id != os.getenv('ADMIN_UID'):
             reply_message = TextSendMessage(text="Unknown command, please contact ericlynn0912@gmail.com to get more information.")

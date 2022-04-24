@@ -41,6 +41,14 @@ def unsubscribe():
 
     return f'<html><body><h1>{reply_message}<br>等待 3 秒後跳轉...</h1><script>setTimeout(function(){{window.location.href = "https://line.me/R/";}},3000);</script></body></html>'
 
+@app.route("/unsubscribe-v2", methods=["GET"])
+def unsubscribe_v2():
+    # get request body as text
+    data = request.args.to_dict()
+    reply_message = UniqloService().unsubscribe_v2(data)
+
+    return f'<html><body><h1>{reply_message}<br>等待 3 秒後關閉...</h1><script>setTimeout(function(){{window.close();}},3000);</script></body></html>'
+
 @app.route("/callback", methods=["POST"])
 def callback():
     # get X-Line-Signature header value
