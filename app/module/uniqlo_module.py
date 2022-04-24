@@ -105,10 +105,13 @@ class UniqloModule:
                 "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
                 "product_id": message
             }
-            low_price = self.get_product_low_price(info['product_code'])       
+            low_price = self.get_product_low_price(info['product_code'])
+            low_price = int(float(low_price))
         
-            if(int(float(low_price)) < int(info['min_price'])):
+            if( low_price< int(info['min_price'])):
                 info['min_price'] = low_price
+            
+            print(f"lowP: {low_price} <> craw: {info['min_price']}")
             
             uniqlo_model.add_product_data(info) 
 
