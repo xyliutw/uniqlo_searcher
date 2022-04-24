@@ -19,6 +19,6 @@ def refactor_default_flex_message(template, info, unsubscribe):
         template['footer']['contents'][1]['action']['uri'] = info['unsubscribe_url']
 
     if info['price'] == info['origin_price']:
-        template['body']['contents'][1]['contents'][0]['contents'][1]['color'] = '#000000'
-        template['body']['contents'][1]['contents'][0]['contents'][0]['color'] = '#000000'
+        template['body']['contents'][1]['contents'][0]['contents'][1]['color'] = '#696969'
+        template['body']['contents'][1]['contents'][0]['contents'][0]['color'] = '#696969'
     return template
