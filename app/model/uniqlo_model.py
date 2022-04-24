@@ -18,6 +18,14 @@ class UniqloModel(PostgresManager):
         self.conn.commit()
         cursor.close()
     
+    def add_product_data(self, info):
+        print(f"Processing: product_id: {info['product_id']}")
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f"INSERT INTO product (prodcut_id, prodcut_code, image_url, origin_price, price, min_price) VALUES ('{info['prodcut_id']}', '{info['product_code']}', '{info['main_pic']}', '{info['origin_price']}', '{info['price']}', '{info['min_price']}');"
+        ) 
+
+    
     def remove_subscription(self, user_id, product_id):
         """
         :return:

@@ -6,6 +6,7 @@ from linebot.models import (
 from ..utility.utility import refactor_default_flex_message
 import os
 import requests
+from bs4 import BeautifulSoup
 import json
 import psycopg2
 from collections import defaultdict
@@ -79,7 +80,8 @@ class UniqloModule:
             "product_name": res['productName'],
             "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}",
             "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
-            "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}"
+            "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
+            "product_id": message
         }
 
         template = json.load(
@@ -88,6 +90,14 @@ class UniqloModule:
         flexMessage = refactor_default_flex_message(
             template, info, unsubscribe
         )
+
+        try:
+            uniqlo_model = UniqloModel()
+            uniqlo_model.add_product_data(info)
+        except Exception as e:
+            print(e)
+            return "發生錯誤，請聯絡管理員"
+
         return info, flexMessage
 
     def subscribe(self, data):
@@ -183,3 +193,17 @@ class UniqloModule:
             "contents": items
         }
         return template
+    
+    def get_product_low_price(self, product_code):
+        try:
+            response = requests.get(f"{os.getenv('UNIQLO_HISTORY_URL')}{product_code}")
+            soup = BeautifulSoup(response.text, "html.parser")
+            res = json.loads(soup.find_all(os.getenv('DATA_PART'))[int(os.getenv('DATA_INDEX'))].text)
+            min_price = res[os.getenv('HISTORY_KEY')][os.getenv('LOW_PRICE')]
+            return min_price
+        except json.decoder.JSONDecodeError as e:
+            return None
+        except Exception as ex:
+            return None
+
+        
