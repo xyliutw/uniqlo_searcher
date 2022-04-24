@@ -19,7 +19,7 @@ class UniqloModule:
         self.message = message
 
     def get_current_price(self):
-        info, flexMessage = self.get_product_price_from_website()
+        info, flexMessage = self.get_price()
         if info == 0:
             reply_message = TextSendMessage(text="查無此商品")
             return reply_message
@@ -28,61 +28,87 @@ class UniqloModule:
             reply_message = FlexSendMessage(name, flexMessage)
             return reply_message
 
-    def get_product_price_from_website(self, user_id = None, product_id = None, unsubscribe = False):
+    def get_price(self, user_id = None, product_id = None, unsubscribe = False):
         message = product_id if product_id is not None else self.message
         user_id = user_id if user_id is not None else self.user_id
 
-        data = {
-            "url": f"{os.getenv('UNIQLO_SEARCH_URL_INSIDE')}{message}",
-            "pageInfo": {
-                "page": 1,
-                "pageSize": 24,
-                "withSideBar": "Y"
-            },
-            "belongTo": "pc",
-            "rank": "overall",
-            "priceRange": {
-                "low": 0,
-                "high": 0
-            },
-            "color": [],
-            "size": [],
-            "season": [],
-            "material": [],
-            "sex": [],
-            "identity": [],
-            "insiteDescription": "",
-            "exist": [],
-            "searchFlag": True,
-            "description": f"{message}"
-        }
-        header = {
-            os.getenv('HEADER_1_K'): os.getenv('HEADER_1_V'),
-            os.getenv('HEADER_2_K'): os.getenv('HEADER_2_V')
-        } 
-        r = requests.post(os.getenv('UNIQLO_SEARCH_URL'), headers=header, json=data)
+        uniqlo_model = UniqloModel()
 
-        res = json.loads(r.text)
+        product_info = uniqlo_model.check_product_exist(message)
 
-        if(res['resp'][2]['productSum'] == 0):
-            return 0, 0
+        if(len(product_info) != 0):
+            product_id = message
+            product_code = product_info[0][1]
+            info = {
+                "origin_price": product_info[0][3],
+                "price": product_info[0][4],
+                "min_price": product_info[0][5],
+                "max_price": product_info[0][3],
+                "name": product_info[0][6],
+                "product_code": product_info[0][1],
+                "main_pic": product_info[0][2],
+                "product_name": product_info[0][7],
+                "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{product_code}",
+                "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={product_id}",
+                "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={product_id}",
+                "product_id": message
+            }
+        else:
+            data = {
+                "url": f"{os.getenv('UNIQLO_SEARCH_URL_INSIDE')}{message}",
+                "pageInfo": {
+                    "page": 1,
+                    "pageSize": 24,
+                    "withSideBar": "Y"
+                },
+                "belongTo": "pc",
+                "rank": "overall",
+                "priceRange": {
+                    "low": 0,
+                    "high": 0
+                },
+                "color": [],
+                "size": [],
+                "season": [],
+                "material": [],
+                "sex": [],
+                "identity": [],
+                "insiteDescription": "",
+                "exist": [],
+                "searchFlag": True,
+                "description": f"{message}"
+            }
+            header = {
+                os.getenv('HEADER_1_K'): os.getenv('HEADER_1_V'),
+                os.getenv('HEADER_2_K'): os.getenv('HEADER_2_V')
+            } 
+            r = requests.post(os.getenv('UNIQLO_SEARCH_URL'), headers=header, json=data)
 
-        res = res['resp'][1][0]
+            res = json.loads(r.text)
 
-        info = {
-            "origin_price": int(float(res['originPrice'])),
-            "price": int(float(res['prices'][0])),
-            "min_price": int(float(res['minPrice'])),
-            "max_price": int(float(res['maxPrice'])),
-            "name": res['name'],
-            "product_code": res['productCode'],
-            "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
-            "product_name": res['productName'],
-            "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}",
-            "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
-            "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
-            "product_id": message
-        }
+            if(res['resp'][2]['productSum'] == 0):
+                return 0, 0
+
+            res = res['resp'][1][0]
+
+            info = {
+                "origin_price": int(float(res['originPrice'])),
+                "price": int(float(res['prices'][0])),
+                "min_price": int(float(res['minPrice'])),
+                "max_price": int(float(res['maxPrice'])),
+                "name": res['name'],
+                "product_code": res['productCode'],
+                "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
+                "product_name": res['productName'],
+                "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}",
+                "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
+                "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
+                "product_id": message
+            }
+        
+        low_price = self.get_product_low_price(info['product_code'])
+        if(int(float(low_price)) < int(info['min_price'])):
+            info['min_price'] = low_price
 
         template = json.load(
         open("app/template/default_flex.json", "r", encoding="utf-8")
@@ -91,8 +117,6 @@ class UniqloModule:
             template, info, unsubscribe
         )
 
-        
-        uniqlo_model = UniqloModel()
         uniqlo_model.add_product_data(info)
         
 
@@ -130,7 +154,7 @@ class UniqloModule:
 
         send_candidate = defaultdict(list)
         for user_info in user_list:
-            info, flex_message = self.get_product_price_from_website(user_info[1], user_info[2] , unsubscribe=True)
+            info, flex_message = self.get_price(user_info[1], user_info[2] , unsubscribe=True)
             if info['price'] < info['origin_price']:
                 send_candidate[user_info[1]].append(flex_message)
 
@@ -178,7 +202,7 @@ class UniqloModule:
 
         items = []
         for user_info in user_list:
-            info, flex_message = self.get_product_price_from_website(user_info[1], user_info[2], unsubscribe=True)
+            info, flex_message = self.get_price(user_info[1], user_info[2], unsubscribe=True)
             items.append(flex_message)
 
         flexMessage = self.build_subscription_flex_message(items)
