@@ -105,12 +105,12 @@ class UniqloModule:
                 "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
                 "product_id": message
             }
-            low_price = self.get_product_low_price(info['product_code'])
-
-            uniqlo_model.add_product_data(info)        
+            low_price = self.get_product_low_price(info['product_code'])       
         
-        if(int(float(low_price)) < int(info['min_price'])):
-            info['min_price'] = low_price
+            if(int(float(low_price)) < int(info['min_price'])):
+                info['min_price'] = low_price
+            
+            uniqlo_model.add_product_data(info) 
 
         template = json.load(
         open("app/template/default_flex.json", "r", encoding="utf-8")
