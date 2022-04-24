@@ -36,7 +36,7 @@ class UniqloModel(PostgresManager):
         self.conn.commit()
         result = cursor.fetchall()
         cursor.close()
-        return result
+        return result[0]
 
     
     def remove_subscription(self, user_id, product_id):
@@ -80,4 +80,20 @@ class UniqloModel(PostgresManager):
         self.conn.commit()
         cursor.close()
 
-        
+    def get_product_list(self):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f"SELECT * FROM product"
+        )
+        self.conn.commit()
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+    
+    def daily_update(self, product_id, price, min_price):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f"UPDATE product SET price = {price}, min_price = {min_price} WHERE product_id = '{product_id}';"
+        )      
+        self.conn.commit()
+        cursor.close()

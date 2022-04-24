@@ -11,6 +11,7 @@ import json
 import psycopg2
 from collections import defaultdict
 from dotenv import load_dotenv
+import time
 load_dotenv()
 
 class UniqloModule:
@@ -38,59 +39,26 @@ class UniqloModule:
 
         if(len(product_info) != 0):
             product_id = message
-            product_code = product_info[0][1]
+            product_code = product_info[1]
             info = {
-                "origin_price": product_info[0][3],
-                "price": product_info[0][4],
-                "min_price": product_info[0][5],
-                "max_price": product_info[0][3],
-                "name": product_info[0][6],
-                "product_code": product_info[0][1],
-                "main_pic": product_info[0][2],
-                "product_name": product_info[0][7],
+                "origin_price": product_info[3],
+                "price": product_info[4],
+                "min_price": product_info[5],
+                "max_price": product_info[3],
+                "name": product_info[6],
+                "product_code": product_info[1],
+                "main_pic": product_info[2],
+                "product_name": product_info[7],
                 "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{product_code}",
                 "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={product_id}",
                 "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={product_id}",
                 "product_id": message,
-                "last_notify_price": product_info[0][8],
+                "last_notify_price": product_info[8],
             }
         else:
-            data = {
-                "url": f"{os.getenv('UNIQLO_SEARCH_URL_INSIDE')}{message}",
-                "pageInfo": {
-                    "page": 1,
-                    "pageSize": 24,
-                    "withSideBar": "Y"
-                },
-                "belongTo": "pc",
-                "rank": "overall",
-                "priceRange": {
-                    "low": 0,
-                    "high": 0
-                },
-                "color": [],
-                "size": [],
-                "season": [],
-                "material": [],
-                "sex": [],
-                "identity": [],
-                "insiteDescription": "",
-                "exist": [],
-                "searchFlag": True,
-                "description": f"{message}"
-            }
-            header = {
-                os.getenv('HEADER_1_K'): os.getenv('HEADER_1_V'),
-                os.getenv('HEADER_2_K'): os.getenv('HEADER_2_V')
-            } 
-            r = requests.post(os.getenv('UNIQLO_SEARCH_URL'), headers=header, json=data)
-
-            res = json.loads(r.text)
-
-            if(res['resp'][2]['productSum'] == 0):
+            res = self.get_official_site_data(message)
+            if res == 0:
                 return 0, 0
-
-            res = res['resp'][1][0]
 
             info = {
                 "origin_price": int(float(res['originPrice'])),
@@ -240,5 +208,67 @@ class UniqloModule:
             return None
         except Exception as ex:
             return None
+    
+    def get_official_site_data(self, message):
+        data = {
+            "url": f"{os.getenv('UNIQLO_SEARCH_URL_INSIDE')}{message}",
+            "pageInfo": {
+                "page": 1,
+                "pageSize": 24,
+                "withSideBar": "Y"
+            },
+            "belongTo": "pc",
+            "rank": "overall",
+            "priceRange": {
+                "low": 0,
+                "high": 0
+            },
+            "color": [],
+            "size": [],
+            "season": [],
+            "material": [],
+            "sex": [],
+            "identity": [],
+            "insiteDescription": "",
+            "exist": [],
+            "searchFlag": True,
+            "description": f"{message}"
+        }
+        header = {
+            os.getenv('HEADER_1_K'): os.getenv('HEADER_1_V'),
+            os.getenv('HEADER_2_K'): os.getenv('HEADER_2_V')
+        } 
+        r = requests.post(os.getenv('UNIQLO_SEARCH_URL'), headers=header, json=data)
 
+        res = json.loads(r.text)
+
+        if(res['resp'][2]['productSum'] == 0):
+            return 0
+        res = res['resp'][1][0]
+
+        return res
         
+    def update_product_price(self, user_id):
+        if user_id != os.getenv('ADMIN_UID'):
+            reply_message = TextSendMessage(text="Unknown command, please contact ericlynn0912@gmail.com to get more information.")
+            return reply_message
+
+        uniqlo_model = UniqloModel()
+        products = uniqlo_model.get_product_list()
+
+        try:
+            for product in products:
+                product_id = product[0]
+                product_data_website = self.get_official_site_data(product_id)
+                product_date_in_db = uniqlo_model.check_product_exist(product_id)
+                price = int(float(product_data_website['prices'][0]))
+                min_price_db = product_date_in_db[5]
+                min_price = min_price_db if min_price_db < price else price
+                print(f"pid:{product_id} <> price:{price} <> min_price:{min_price}")
+                uniqlo_model.daily_update(product_id=product_id, price=price, min_price=min_price)
+                time.sleep(1)
+        except Exception:
+            reply_message = TextSendMessage(text="[注意] 更新過程發生問題")
+            return reply_message
+        reply_message = TextSendMessage(text="更新完成")
+        return reply_message
