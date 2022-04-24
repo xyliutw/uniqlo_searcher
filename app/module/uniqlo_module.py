@@ -12,6 +12,8 @@ import psycopg2
 from collections import defaultdict
 from dotenv import load_dotenv
 import time
+from urllib import parse
+
 load_dotenv()
 
 class UniqloModule:
@@ -101,6 +103,20 @@ class UniqloModule:
         try:
             uniqlo_model = UniqloModel()
             uniqlo_model.add_subscription(data.get('uid'), data.get('product_id'))
+        except psycopg2.errors.UniqueViolation:
+            return "此商品您已訂閱"
+        except Exception as e:
+            print(e)
+            return "訂閱功能發生錯誤，請聯絡管理員"
+        return "訂閱成功👍"
+    
+    def subscribe_v2(self, data):
+        params = parse.parse_qs(parse.urlparse(data.get('liff.state')).query)
+        if(params.get('uid') is None or params.get('product_id') is None):
+            return "訂閱功能發生錯誤，請聯絡管理員"
+        try:
+            uniqlo_model = UniqloModel()
+            uniqlo_model.add_subscription(params.get('uid')[0], params.get('product_id')[0])
         except psycopg2.errors.UniqueViolation:
             return "此商品您已訂閱"
         except Exception as e:
