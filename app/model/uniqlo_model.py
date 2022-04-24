@@ -71,3 +71,13 @@ class UniqloModel(PostgresManager):
         result = cursor.fetchall()
         cursor.close()
         return result
+
+    def update_last_notify_price(self, product_id, price):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            f"UPDATE product SET last_notify_price = {price} WHERE product_id = '{product_id}';"
+        )      
+        self.conn.commit()
+        cursor.close()
+
+        

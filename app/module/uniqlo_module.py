@@ -51,7 +51,8 @@ class UniqloModule:
                 "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{product_code}",
                 "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={product_id}",
                 "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={product_id}",
-                "product_id": message
+                "product_id": message,
+                "last_notify_price": product_info[0][8],
             }
         else:
             data = {
@@ -103,7 +104,8 @@ class UniqloModule:
                 "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}",
                 "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
                 "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
-                "product_id": message
+                "product_id": message,
+                "last_notify_price": None
             }
             low_price = self.get_product_low_price(info['product_code'])
             if low_price is not None:
@@ -158,10 +160,16 @@ class UniqloModule:
         user_list = uniqlo_model.get_send_list()
 
         send_candidate = defaultdict(list)
+        uniqlo_model = UniqloModel()
         for user_info in user_list:
             info, flex_message = self.get_price(user_info[1], user_info[2] , unsubscribe=True)
-            if info['price'] < info['origin_price']:
+            if info['last_notify_price'] is None or info['price'] < info['last_notify_price']:
                 send_candidate[user_info[1]].append(flex_message)
+                try:
+                    uniqlo_model.update_last_notify_price(info['product_id'], info['price'])
+                except Exception:
+                    reply_message = TextSendMessage(text="更新價格時發生錯誤")
+                    return reply_message
 
         for user_id, flex_messages in send_candidate.items():
             # send message here
