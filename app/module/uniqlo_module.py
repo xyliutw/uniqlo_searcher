@@ -91,12 +91,10 @@ class UniqloModule:
             template, info, unsubscribe
         )
 
-        try:
-            uniqlo_model = UniqloModel()
-            uniqlo_model.add_product_data(info)
-        except Exception as e:
-            print(e)
-            return "發生錯誤，請聯絡管理員"
+        
+        uniqlo_model = UniqloModel()
+        uniqlo_model.add_product_data(info)
+        
 
         return info, flexMessage
 
