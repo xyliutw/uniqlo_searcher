@@ -106,10 +106,11 @@ class UniqloModule:
                 "product_id": message
             }
             low_price = self.get_product_low_price(info['product_code'])
-            low_price = int(float(low_price))
-        
-            if( low_price < int(info['min_price'])):
-                info['min_price'] = low_price
+            if low_price is not None:
+                low_price = int(float(low_price))
+            
+                if( low_price < int(info['min_price'])):
+                    info['min_price'] = low_price
 
             
             uniqlo_model.add_product_data(info) 
