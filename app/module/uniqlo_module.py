@@ -105,8 +105,10 @@ class UniqloModule:
                 "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
                 "product_id": message
             }
+            low_price = self.get_product_low_price(info['product_code'])
+
+            uniqlo_model.add_product_data(info)        
         
-        low_price = self.get_product_low_price(info['product_code'])
         if(int(float(low_price)) < int(info['min_price'])):
             info['min_price'] = low_price
 
@@ -116,9 +118,6 @@ class UniqloModule:
         flexMessage = refactor_default_flex_message(
             template, info, unsubscribe
         )
-
-        uniqlo_model.add_product_data(info)
-        
 
         return info, flexMessage
 
