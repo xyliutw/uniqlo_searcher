@@ -264,9 +264,8 @@ class UniqloModule:
                 price = int(float(product_data_website['prices'][0]))
                 min_price_db = product_date_in_db[5]
                 min_price = min_price_db if min_price_db < price else price
-                print(f"pid:{product_id} <> price:{price} <> min_price:{min_price}")
                 uniqlo_model.daily_update(product_id=product_id, price=price, min_price=min_price)
-                time.sleep(1)
+                time.sleep(2)
         except Exception:
             reply_message = TextSendMessage(text="[注意] 更新過程發生問題")
             return reply_message
