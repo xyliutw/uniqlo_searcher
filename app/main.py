@@ -34,7 +34,7 @@ def subscribe_v2():
     return f"""<table width="100%" height="100">
     <tr><td align="center" valign="center"><img src="{check_img}" alt=""  height=100 width=100></td></tr>
     <tr><td align="center" valign="center"><font color="#696969" font size="10">{reply_message}</font></td></tr>
-    <tr><td align="center" valign="center"><font color="#696969" font size="8">等待 2 秒後跳轉</font></td></tr>
+    <tr><td align="center" valign="center"><font color="#696969" font size="6">等待 2 秒後跳轉</font></td></tr>
     </table>
     <script>setTimeout(function(){{window.close();}},2000);</script>"""
 
@@ -56,7 +56,7 @@ def unsubscribe_v2():
     return f"""<table width="100%" height="100">
     <tr><td align="center" valign="center"><img src="{check_img}" alt=""  height=100 width=100></td></tr>
     <tr><td align="center" valign="center"><font color="#696969" font size="10">{reply_message}</font></td></tr>
-    <tr><td align="center" valign="center"><font color="#696969" font size="8">等待 2 秒後跳轉</font></td></tr>
+    <tr><td align="center" valign="center"><font color="#696969" font size="6">等待 2 秒後跳轉</font></td></tr>
     </table>
     <script>setTimeout(function(){{window.close();}},2000);</script>"""
 
