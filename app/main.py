@@ -30,8 +30,13 @@ def subscribe_v2():
     # get request body as text
     data = request.args.to_dict()
     reply_message = UniqloService().subscribe_v2(data)
-
-    return f'<html><body><h1>{reply_message}<br>等待 3 秒後關閉...</h1><script>setTimeout(function(){{window.close();}},2000);</script></body></html>'
+    check_img = os.getenv("CHECK_IMAGE")
+    return f"""<table width="100%" height="100">
+    <tr><td align="center" valign="center"><img src="{check_img}" alt=""  height=50 width=50></td></tr>
+    <tr><td align="center" valign="center"><font color="#696969" font size="6">{reply_message}</font></td></tr>
+    <tr><td align="center" valign="center"><font color="#696969" font size="3">等待 2 秒後跳轉</font></td></tr>
+    </table>
+    <script>setTimeout(function(){{window.close();}},2000);</script>"""
 
 @app.route("/unsubscribe", methods=["GET"])
 def unsubscribe():
@@ -47,7 +52,13 @@ def unsubscribe_v2():
     data = request.args.to_dict()
     reply_message = UniqloService().unsubscribe_v2(data)
 
-    return f'<html><body><h1>{reply_message}<br>等待 3 秒後關閉...</h1><script>setTimeout(function(){{window.close();}},2000);</script></body></html>'
+    check_img = os.getenv("CHECK_IMAGE")
+    return f"""<table width="100%" height="100">
+    <tr><td align="center" valign="center"><img src="{check_img}" alt=""  height=50 width=50></td></tr>
+    <tr><td align="center" valign="center"><font color="#696969" font size="6">{reply_message}</font></td></tr>
+    <tr><td align="center" valign="center"><font color="#696969" font size="3">等待 2 秒後跳轉</font></td></tr>
+    </table>
+    <script>setTimeout(function(){{window.close();}},2000);</script>"""
 
 @app.route("/callback", methods=["POST"])
 def callback():

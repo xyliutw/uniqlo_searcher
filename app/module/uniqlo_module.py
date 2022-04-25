@@ -98,56 +98,56 @@ class UniqloModule:
 
     def subscribe(self, data):
         if(data.get('uid') is None or data.get('product_id') is None):
-            return "訂閱功能發生錯誤，請聯絡管理員"
+            return "追蹤功能發生錯誤，請聯絡管理員"
 
         try:
             uniqlo_model = UniqloModel()
             uniqlo_model.add_subscription(data.get('uid'), data.get('product_id'))
         except psycopg2.errors.UniqueViolation:
-            return "此商品您已訂閱"
+            return "此商品您已追蹤"
         except Exception as e:
             print(e)
-            return "訂閱功能發生錯誤，請聯絡管理員"
-        return "訂閱成功👍"
+            return "追蹤功能發生錯誤，請聯絡管理員"
+        return "追蹤成功👍"
     
     def subscribe_v2(self, data):
         params = parse.parse_qs(parse.urlparse(data.get('liff.state')).query)
         if(params.get('uid') is None or params.get('product_id') is None):
-            return "訂閱功能發生錯誤，請聯絡管理員"
+            return "追蹤功能發生錯誤，請聯絡管理員"
         try:
             uniqlo_model = UniqloModel()
             uniqlo_model.add_subscription(params.get('uid')[0], params.get('product_id')[0])
         except psycopg2.errors.UniqueViolation:
-            return "此商品您已訂閱"
+            return "此商品您已追蹤"
         except Exception as e:
             print(e)
-            return "訂閱功能發生錯誤，請聯絡管理員"
-        return "訂閱成功👍"
+            return "追蹤功能發生錯誤，請聯絡管理員"
+        return "追蹤成功👍"
     
     def unsubscribe(self, data):
         if(data.get('uid') is None or data.get('product_id') is None):
-            return "訂閱功能發生錯誤，請聯絡管理員"
+            return "追蹤功能發生錯誤，請聯絡管理員"
 
         try:
             uniqlo_model = UniqloModel()
             uniqlo_model.remove_subscription(data.get('uid'), data.get('product_id'))
         except Exception as e:
             print(e)
-            return "訂閱功能發生錯誤，請聯絡管理員"
-        return "取消訂閱成功👍"
+            return "追蹤功能發生錯誤，請聯絡管理員"
+        return "取消追蹤成功👍"
     
     def unsubscribe_v2(self, data):
         params = parse.parse_qs(parse.urlparse(data.get('liff.state')).query)
         if(params.get('uid') is None or params.get('product_id') is None):
-            return "訂閱功能發生錯誤，請聯絡管理員"
+            return "追蹤功能發生錯誤，請聯絡管理員"
 
         try:
             uniqlo_model = UniqloModel()
             uniqlo_model.remove_subscription(params.get('uid')[0], params.get('product_id')[0])
         except Exception as e:
             print(e)
-            return "訂閱功能發生錯誤，請聯絡管理員"
-        return "取消訂閱成功👍"
+            return "追蹤功能發生錯誤，請聯絡管理員"
+        return "取消追蹤成功👍"
     
     def send_notification(self, user_id):
         if user_id != os.getenv('ADMIN_UID'):
@@ -182,7 +182,7 @@ class UniqloModule:
             "messages": [
             {
                 "type": "flex",
-                "altText": "訂閱清單",
+                "altText": "追蹤清單",
                 "contents": {
                     "type": "carousel",
                     "contents": flex_messages
@@ -207,7 +207,7 @@ class UniqloModule:
         user_list = uniqlo_model.get_user_subscription_list(self.user_id)
 
         if len(user_list) == 0:
-            reply_message = TextSendMessage(text="查無訂閱清單")
+            reply_message = TextSendMessage(text="查無追蹤清單")
             return reply_message
 
         items = []
@@ -216,7 +216,7 @@ class UniqloModule:
             items.append(flex_message)
 
         flexMessage = self.build_subscription_flex_message(items)
-        reply_message = FlexSendMessage('訂閱清單', flexMessage)
+        reply_message = FlexSendMessage('追蹤清單', flexMessage)
         return reply_message
 
     def build_subscription_flex_message(self, items):
