@@ -34,9 +34,9 @@ class UniqloModel(PostgresManager):
             f"SELECT * FROM product WHERE product_id = '{product_id}'"
         )
         self.conn.commit()
-        result = cursor.fetchall()
+        result = cursor.fetchone()
         cursor.close()
-        return result[0]
+        return result
 
     
     def remove_subscription(self, user_id, product_id):
