@@ -39,7 +39,7 @@ class UniqloModule:
 
         product_info = uniqlo_model.check_product_exist(message)
 
-        if(len(product_info) != 0):
+        if(product_info is not None):
             product_id = message
             product_code = product_info[1]
             info = {
