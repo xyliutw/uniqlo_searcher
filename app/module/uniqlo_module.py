@@ -167,6 +167,12 @@ class UniqloModule:
                 except Exception:
                     reply_message = TextSendMessage(text="更新價格時發生錯誤")
                     return reply_message
+            elif info['last_notify_price'] is not None and info['price'] > info['last_notify_price']: # 特價已結束，重置last_notify_price以讓下次有特價會繼續發送通知
+                try:
+                    uniqlo_model.update_last_notify_price(info['product_id'], info['price'])
+                except Exception:
+                    reply_message = TextSendMessage(text="更新價格時發生錯誤")
+                    return reply_message
 
         for user_id, flex_messages in send_candidate.items():
             # send message here
