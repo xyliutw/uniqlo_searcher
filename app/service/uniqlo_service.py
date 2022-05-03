@@ -34,7 +34,3 @@ class UniqloService:
     def get_subscription_list(self):
         result = self.module.get_subscription_list()
         return result
-    
-    def update_product_price(self):
-        result = self.module.update_product_price(self.user_id)
-        return result

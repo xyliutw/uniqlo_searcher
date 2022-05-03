@@ -100,10 +100,6 @@ def handle_message(event):
             user_id=user_id,
             message=str(event.message.text)
         ).get_subscription_list()
-    elif event.message.text == "更新商品價格":
-        ## DO SEND NOTIFICATION TO EACH USER
-        print("Updating...")
-        reply_message = UniqloService(user_id=user_id).update_product_price()
     else:
         reply_message = TextSendMessage(
             text="Unknown command, please contact ericlynn0912@gmail.com to get more information."

@@ -282,31 +282,3 @@ class UniqloModule:
         res = res['resp'][1][0]
 
         return res
-        
-    def update_product_price(self, user_id):
-        if user_id != os.getenv('ADMIN_UID'):
-            reply_message = TextSendMessage(text="Unknown command, please contact ericlynn0912@gmail.com to get more information.")
-            return reply_message
-
-        uniqlo_model = UniqloModel()
-        products = uniqlo_model.get_product_list()
-
-        try:
-            for product in products:
-                product_id = product[0]
-                print(f"==== {product_id} ====")
-                print("--- GET SITE DATA ---")
-                product_data_website = self.get_official_site_data(product_id)
-                print("--- GET DB DATA ---")
-                product_date_in_db = uniqlo_model.check_product_exist(product_id)
-                price = int(float(product_data_website['prices'][0]))
-                min_price_db = product_date_in_db[5]
-                min_price = min_price_db if min_price_db < price else price
-                print("--- UPDATE DB ---")
-                uniqlo_model.daily_update(product_id=product_id, price=price, min_price=min_price)
-                time.sleep(2)
-        except Exception:
-            reply_message = TextSendMessage(text="[注意] 更新過程發生問題")
-            return reply_message
-        reply_message = TextSendMessage(text="更新完成")
-        return reply_message
