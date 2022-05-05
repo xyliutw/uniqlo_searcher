@@ -41,21 +41,21 @@ class UniqloModule:
 
         if(product_info is not None):
             product_id = message
-            product_code = product_info[1]
+            product_code = product_info['product_code']
             info = {
-                "origin_price": product_info[3],
-                "price": product_info[4],
-                "min_price": product_info[5],
-                "max_price": product_info[3],
-                "name": product_info[6],
-                "product_code": product_info[1],
-                "main_pic": product_info[2],
-                "product_name": product_info[7],
+                "origin_price": product_info['origin_price'],
+                "price": product_info['price'],
+                "min_price": product_info['min_price'],
+                "max_price": product_info['origin_price'],
+                "name": product_info['name'],
+                "product_code": product_info['product_code'],
+                "main_pic": product_info['image_url'],
+                "product_name": product_info['product_name'],
                 "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{product_code}",
                 "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={product_id}",
                 "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={product_id}",
                 "product_id": message,
-                "last_notify_price": product_info[8],
+                "last_notify_price": product_info['last_notify_price'],
             }
         else:
             res = self.get_official_site_data(message)
@@ -66,7 +66,7 @@ class UniqloModule:
                 "origin_price": int(float(res['originPrice'])),
                 "price": int(float(res['prices'][0])),
                 "min_price": int(float(res['minPrice'])),
-                "max_price": int(float(res['maxPrice'])),
+                "max_price": int(float(res['originPrice'])),
                 "name": res['name'],
                 "product_code": res['productCode'],
                 "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
@@ -159,9 +159,9 @@ class UniqloModule:
         send_candidate = defaultdict(list)
         uniqlo_model = UniqloModel()
         for user_info in user_list:
-            info, flex_message = self.get_price(user_info[1], user_info[2] , unsubscribe=True)
+            info, flex_message = self.get_price(user_info['uid'], user_info['product_id'] , unsubscribe=True)
             if (info['last_notify_price'] is None or info['price'] < info['last_notify_price']) and info['price'] < info['origin_price']:
-                send_candidate[user_info[1]].append(flex_message)
+                send_candidate[user_info['uid']].append(flex_message)
                 try:
                     uniqlo_model.update_last_notify_price(info['product_id'], info['price'])
                 except Exception:
@@ -218,7 +218,7 @@ class UniqloModule:
 
         items = []
         for user_info in user_list:
-            info, flex_message = self.get_price(user_info[1], user_info[2], unsubscribe=True)
+            info, flex_message = self.get_price(user_info['uid'], user_info['product_id'], unsubscribe=True)
             items.append(flex_message)
 
         flexMessage = self.build_subscription_flex_message(items)
