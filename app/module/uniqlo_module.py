@@ -23,8 +23,8 @@ class UniqloModule:
 
     def get_current_price(self):
         info, flexMessage = self.get_price()
-        if info == 0:
-            reply_message = TextSendMessage(text="查無此商品")
+        if info == 0 or len(self.message) != 6:
+            reply_message = TextSendMessage(text="很抱歉，查無此商品。 汪汪！")
             return reply_message
         else:
             name = info['name']
