@@ -102,7 +102,7 @@ def handle_message(event):
         ).get_subscription_list()
     else:
         reply_message = TextSendMessage(
-            text="Unknown command, please contact ericlynn0912@gmail.com to get more information."
+            text="汪汪！ 不知道你在說什麼耶～"
         )
     line_bot_api.reply_message(event.reply_token, reply_message)
 
