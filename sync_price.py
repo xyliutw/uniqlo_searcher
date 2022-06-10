@@ -69,16 +69,18 @@ try:
         print(f"==== {product_id} ====")
         print("--- GET SITE DATA ---")
         product_data_website = get_official_site_data(product_id)
-        print("--- GET DB DATA ---")
-        product_date_in_db = uniqlo_model.check_product_exist(product_id)
-        price = int(float(product_data_website['prices'][0]))
-        min_price_db = product_date_in_db['min_price']
-        min_price = min_price_db if min_price_db < price else price
-        print("--- UPDATE DB ---")
-        uniqlo_model.daily_update(product_id=product_id, price=price, min_price=min_price)
+        if product_data_website:
+            print("--- GET DB DATA ---")
+            product_date_in_db = uniqlo_model.check_product_exist(product_id)
+            price = int(float(product_data_website['prices'][0]))
+            min_price_db = product_date_in_db['min_price']
+            min_price = min_price_db if min_price_db < price else price
+            print("--- UPDATE DB ---")
+            uniqlo_model.daily_update(product_id=product_id, price=price, min_price=min_price)
         time.sleep(2)
     time_end = time.time()
-except Exception:
-    send_notify("\n更新發生錯誤")
+except Exception as e:
+    send_notify(f"\n更新發生錯誤\nErrorMsg:{str(e)}\nproduct_id:{product_id}")
+    exit()
 time_c= time_end - time_start
 send_notify(f"\n同步成功！\n========\n共花費: {round(time_c)} sec\n更新:{len(products)}筆資料")
