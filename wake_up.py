@@ -16,8 +16,10 @@ def send_notify(message):
     return r.status_code
 
 try:
-    response = requests.get(f"{os.getenv('WAKE_UP_URL')}")
-    print("喚醒成功")
+    for i in range(2):
+        response = requests.get(f"{os.getenv('WAKE_UP_URL')}")
+        print("喚醒成功")
+        time.sleep(1800)
 except json.decoder.JSONDecodeError as e:
     send_notify(f"\喚醒發生錯誤\nErrorMsg:{str(e)}")
     exit()
