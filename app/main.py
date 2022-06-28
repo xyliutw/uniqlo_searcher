@@ -62,6 +62,11 @@ def unsubscribe_v2():
     </table>
     <script>setTimeout(function(){{window.close();}},2000);</script>"""
 
+@app.route("/wake-up", methods=["GET"])
+def wakeup():
+
+    return "I've got up."
+
 @app.route("/callback", methods=["POST"])
 def callback():
     # get X-Line-Signature header value
