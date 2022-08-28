@@ -117,7 +117,7 @@ class UniqloModule:
         try:
             uniqlo_model = UniqloModel()
             subscription_amount = uniqlo_model.get_user_subscription_amount(params.get('uid')[0])
-            if subscription_amount['total'] is not None and subscription_amount['total'] > 12:
+            if subscription_amount['total'] is not None and subscription_amount['total'] >= 12:
                 return "追蹤功能上限為12筆商品，請移除後重試"
             uniqlo_model.add_subscription(params.get('uid')[0], params.get('product_id')[0])
         except psycopg2.errors.UniqueViolation:
