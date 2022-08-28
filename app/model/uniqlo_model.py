@@ -8,7 +8,7 @@ class UniqloModel(PostgresManager):
     def get_user_subscription_amount(self, user_id):
         cursor = self.conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
-            f"select uid, count(product_id) as total from subscription where uid = '{user_id}' group by uid "
+            f"select uid, count(product_id) as total from subscription where uid = '{user_id}' group by uid"
         )
         self.conn.commit()
         result = cursor.fetchone()
