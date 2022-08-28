@@ -109,11 +109,7 @@ def handle_message(event):
         reply_message = TextSendMessage(
             text="汪汪！ 不知道你在說什麼耶～"
         )
-    if type(reply_message) == list:
-        for message in reply_message:
-            line_bot_api.reply_message(event.reply_token, message)
-    else:        
-        line_bot_api.reply_message(event.reply_token, reply_message)
+    line_bot_api.reply_message(event.reply_token, reply_message)
 
 
 if __name__ == "__main__":

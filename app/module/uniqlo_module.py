@@ -221,22 +221,16 @@ class UniqloModule:
             info, flex_message = self.get_price(user_info['uid'], user_info['product_id'], unsubscribe=True)
             items.append(flex_message)
 
-        flexMessages = self.build_subscription_flex_message(items)
-        reply_messages = []
-        for flexMessage in flexMessages:
-            reply_messages.append(FlexSendMessage('追蹤清單', flexMessage))
-        return reply_messages
+        flexMessage = self.build_subscription_flex_message(items)
+        reply_message = FlexSendMessage('追蹤清單', flexMessage)
+        return reply_message
 
     def build_subscription_flex_message(self, items):
-        # fix 6 for display flex message in each reply message
-        N = 6
-        # separate items into 6 items per group
-        groupedItems = [items[n:n+N] for n in range(0, len(items), N)]
-        templates = []
-        for items in groupedItems:
-            templates.append({"type": "carousel", "contents": items})
-        
-        return templates
+        template = {
+            "type": "carousel",
+            "contents": items[:12]
+        }
+        return template
     
     def get_product_low_price(self, product_code):
         try:
