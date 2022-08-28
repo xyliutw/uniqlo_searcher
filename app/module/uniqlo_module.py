@@ -282,6 +282,6 @@ class UniqloModule:
 
         if(res['resp'][2]['productSum'] == 0):
             return 0
-        res = res['resp'][1][0]
+        res = res['resp'][1]
 
         return res
