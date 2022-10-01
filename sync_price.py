@@ -71,9 +71,8 @@ try:
         product_data_website = get_official_site_data(product_id)
         if product_data_website:
             print("--- GET DB DATA ---")
-            product_date_in_db = uniqlo_model.check_product_exist(product_id)
             price = int(float(product_data_website['prices'][0]))
-            min_price_db = product_date_in_db['min_price']
+            min_price_db = product['min_price']
             min_price = min_price_db if min_price_db < price else price
             print("--- UPDATE DB ---")
             uniqlo_model.daily_update(product_id=product_id, price=price, min_price=min_price)
