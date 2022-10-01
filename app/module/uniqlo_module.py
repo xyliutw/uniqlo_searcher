@@ -61,31 +61,57 @@ class UniqloModule:
             res = self.get_official_site_data(message)
             if res == 0:
                 return 0, 0
+            if type(res) == list:
+                res = res[0]
+                info = {
+                    "origin_price": int(float(res['originPrice'])),
+                    "price": int(float(res['prices'][0])),
+                    "min_price": int(float(res['minPrice'])),
+                    "max_price": int(float(res['originPrice'])),
+                    "name": res['name'],
+                    "product_code": res['productCode'],
+                    "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
+                    "product_name": res['productName'],
+                    "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}",
+                    "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
+                    "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
+                    "product_id": message,
+                    "last_notify_price": None
+                }
+                low_price = self.get_product_low_price(info['product_code'])
+                if low_price is not None:
+                    low_price = int(float(low_price))
+                
+                    if( low_price < int(info['min_price'])):
+                        info['min_price'] = low_price
 
-            info = {
-                "origin_price": int(float(res['originPrice'])),
-                "price": int(float(res['prices'][0])),
-                "min_price": int(float(res['minPrice'])),
-                "max_price": int(float(res['originPrice'])),
-                "name": res['name'],
-                "product_code": res['productCode'],
-                "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
-                "product_name": res['productName'],
-                "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}",
-                "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
-                "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
-                "product_id": message,
-                "last_notify_price": None
-            }
-            low_price = self.get_product_low_price(info['product_code'])
-            if low_price is not None:
-                low_price = int(float(low_price))
-            
-                if( low_price < int(info['min_price'])):
-                    info['min_price'] = low_price
+                
+                uniqlo_model.add_product_data(info)
+            else:
+                info = {
+                    "origin_price": int(float(res['originPrice'])),
+                    "price": int(float(res['prices'][0])),
+                    "min_price": int(float(res['minPrice'])),
+                    "max_price": int(float(res['originPrice'])),
+                    "name": res['name'],
+                    "product_code": res['productCode'],
+                    "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
+                    "product_name": res['productName'],
+                    "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}",
+                    "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
+                    "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
+                    "product_id": message,
+                    "last_notify_price": None
+                }
+                low_price = self.get_product_low_price(info['product_code'])
+                if low_price is not None:
+                    low_price = int(float(low_price))
+                
+                    if( low_price < int(info['min_price'])):
+                        info['min_price'] = low_price
 
-            
-            uniqlo_model.add_product_data(info) 
+                
+                uniqlo_model.add_product_data(info)
 
         template = json.load(
         open("app/template/default_flex.json", "r", encoding="utf-8")
