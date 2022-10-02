@@ -95,6 +95,8 @@ def handle_message(event):
     if event.message.text == "發送每日通知訊息":
         ## DO SEND NOTIFICATION TO EACH USER
         reply_message = UniqloService(user_id=user_id).send_notification()
+    elif event.message.text == "設定排程":
+        reply_message = UniqloService(user_id=user_id).cron_setter()
     elif event.message.text.isnumeric():
         reply_message = UniqloService(
             user_id=user_id,

@@ -31,6 +31,10 @@ class UniqloService:
         result = self.module.send_notification(self.user_id)
         return result
     
+    def cron_setter(self):
+        result = self.module.cron_setter(self.user_id)
+        return result
+    
     def get_subscription_list(self):
         result = self.module.get_subscription_list()
         return result

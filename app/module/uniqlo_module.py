@@ -13,6 +13,7 @@ from collections import defaultdict
 from dotenv import load_dotenv
 import time
 from urllib import parse
+import subprocess
 
 load_dotenv()
 
@@ -139,6 +140,7 @@ class UniqloModule:
     def subscribe_v2(self, data):
         params = parse.parse_qs(parse.urlparse(data.get('liff.state')).query)
         if(params.get('uid') is None or params.get('product_id') is None):
+            self.send_notify('uid or product_id is none.')
             return "追蹤功能發生錯誤，請聯絡管理員"
         try:
             uniqlo_model = UniqloModel()
@@ -150,6 +152,7 @@ class UniqloModule:
             return "此商品您已追蹤"
         except Exception as e:
             print(e)
+            self.send_notify(str(e))
             return "追蹤功能發生錯誤，請聯絡管理員"
         return "追蹤成功👍"
     
@@ -168,6 +171,7 @@ class UniqloModule:
     def unsubscribe_v2(self, data):
         params = parse.parse_qs(parse.urlparse(data.get('liff.state')).query)
         if(params.get('uid') is None or params.get('product_id') is None):
+            self.send_notify('uid or product_id is none.')
             return "追蹤功能發生錯誤，請聯絡管理員"
 
         try:
@@ -175,9 +179,35 @@ class UniqloModule:
             uniqlo_model.remove_subscription(params.get('uid')[0], params.get('product_id')[0])
         except Exception as e:
             print(e)
+            self.send_notify(str(e))
             return "追蹤功能發生錯誤，請聯絡管理員"
         return "取消追蹤成功👍"
     
+    def send_notify(self, message):
+        headers = {
+            "Authorization": "Bearer " + os.getenv("LINE_NOTIFY"), 
+            "Content-Type" : "application/x-www-form-urlencoded"
+        }
+
+        payload = {'message': message }
+        r = requests.post("https://notify-api.line.me/api/notify", headers = headers, params = payload)
+        return r.status_code
+
+    def cron_setter(self, user_id):
+        if user_id != os.getenv('ADMIN_UID'):
+            reply_message = TextSendMessage(text="Unknown command, please contact ericlynn0912@gmail.com to get more information.")
+            return reply_message
+        try:
+            subprocess.run(["crontab", "/app/crontab"])
+            subprocess.run(["crontab", "-l"])
+            subprocess.run(["crond", "-d", "8"])
+        except Exception as e:
+            print(e)
+            self.send_notify(str(e))
+            return "Crontab failed."
+        reply_message = TextSendMessage(text="Crontab is set.")
+        return reply_message
+
     def send_notification(self, user_id):
         if user_id != os.getenv('ADMIN_UID'):
             reply_message = TextSendMessage(text="Unknown command, please contact ericlynn0912@gmail.com to get more information.")
