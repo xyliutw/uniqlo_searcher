@@ -11,7 +11,6 @@ class PostgresManager:
         """
         :return: 連接 Heroku Postgres SQL 認證用
         """
-        # self.database_url = os.popen(f'heroku config:get DATABASE_URL -a {self.project_name}').read()[:-1]
         self.database_url = os.getenv("DATABASE_URL")
         self.conn = psycopg2.connect(self.database_url)
 
