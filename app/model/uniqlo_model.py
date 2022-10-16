@@ -100,6 +100,14 @@ class UniqloModel(PostgresManager):
         cursor.close()
         return result
     
+    def delete_invalid_product(self, product_id):
+        cursor = self.conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(
+            f"DELETE FROM subscription where product_id = '{product_id}';"
+        )      
+        self.conn.commit()
+        cursor.close()
+    
     def daily_update(self, product_id, price, min_price):
         cursor = self.conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(

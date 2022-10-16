@@ -216,30 +216,38 @@ class UniqloModule:
         user_list = uniqlo_model.get_send_list()
 
         send_candidate = defaultdict(list)
-        uniqlo_model = UniqloModel()
-        for user_info in user_list:
-            info, flex_message = self.get_price(user_info['uid'], user_info['product_id'] , unsubscribe=True)
-            if (info['last_notify_price'] is None or info['price'] < info['last_notify_price']) and info['price'] < info['origin_price']:
-                send_candidate[user_info['uid']].append(flex_message)
-                try:
-                    uniqlo_model.update_last_notify_price(info['product_id'], info['price'])
-                except Exception:
-                    reply_message = TextSendMessage(text="更新價格時發生錯誤")
-                    return reply_message
-            elif info['last_notify_price'] is not None and info['price'] > info['last_notify_price']: # 特價已結束，重置last_notify_price以讓下次有特價會繼續發送通知
-                try:
-                    uniqlo_model.update_last_notify_price(info['product_id'], info['price'])
-                except Exception:
-                    reply_message = TextSendMessage(text="更新價格時發生錯誤")
-                    return reply_message
+        try:
+            for user_info in user_list:
+                info, flex_message = self.get_price(user_info['uid'], user_info['product_id'] , unsubscribe=True)
+                if type(info) == int:
+                    uniqlo_model.delete_invalid_product(user_info['product_id'])
+                    continue
+                if (info['last_notify_price'] is None or (info['price'] < info['last_notify_price']) and info['price'] < info['origin_price']):
+                    send_candidate[user_info['uid']].append(flex_message)
+                    try:
+                        uniqlo_model.update_last_notify_price(info['product_id'], info['price'])
+                    except Exception:
+                        reply_message = TextSendMessage(text="更新價格時發生錯誤")
+                        return reply_message
+                elif info['last_notify_price'] is not None and info['price'] > info['last_notify_price']: # 特價已結束，重置last_notify_price以讓下次有特價會繼續發送通知
+                    try:
+                        uniqlo_model.update_last_notify_price(info['product_id'], info['price'])
+                    except Exception:
+                        reply_message = TextSendMessage(text="更新價格時發生錯誤")
+                        return reply_message
 
-        for user_id, flex_messages in send_candidate.items():
-            # send message here
-            data = self.build_request_body(user_id, flex_messages)
-            self.line_push(data)
+            for user_id, flex_messages in send_candidate.items():
+                # send message here
+                data = self.build_request_body(user_id, flex_messages)
+                self.line_push(data)
 
-        reply_message = TextSendMessage(text="發送完成")
-        return reply_message
+            reply_message = TextSendMessage(text="發送完成")
+            return reply_message
+        except Exception as e:
+            self.send_notify(f"\n發送特價通知時發生錯誤\nErrorMsg:{str(e)}\n{info}\nuid: {user_info['uid']}\nproduct_id: {user_info['product_id']}")
+            reply_message = TextSendMessage(text="Error")
+            return reply_message
+
     
     def build_request_body(self, user_id, flex_messages):
         data = {
