@@ -77,7 +77,7 @@ class UniqloModule:
                     "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
                     "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
                     "product_id": message,
-                    "last_notify_price": None
+                    "last_notify_price": int(float(res['prices'][0]))
                 }
                 low_price = self.get_product_low_price(info['product_code'])
                 if low_price is not None:
@@ -102,7 +102,7 @@ class UniqloModule:
                     "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
                     "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
                     "product_id": message,
-                    "last_notify_price": None
+                    "last_notify_price": int(float(res['prices'][0]))
                 }
                 low_price = self.get_product_low_price(info['product_code'])
                 if low_price is not None:
@@ -222,7 +222,8 @@ class UniqloModule:
                 if type(info) == int:
                     uniqlo_model.delete_invalid_product(user_info['product_id'])
                     continue
-                if (info['last_notify_price'] is None or (info['price'] < info['last_notify_price']) and info['price'] < info['origin_price']):
+                if (info['last_notify_price'] is None or (info['price'] < info['last_notify_price'])) and info['price'] < info['origin_price']:
+                    # self.send_notify(f"\[Enter Here]\nMsg:\n{info}")
                     send_candidate[user_info['uid']].append(flex_message)
                     try:
                         uniqlo_model.update_last_notify_price(info['product_id'], info['price'])

@@ -33,7 +33,7 @@ class UniqloModel(PostgresManager):
         cursor = self.conn.cursor(cursor_factory=RealDictCursor)
         print(info)
         cursor.execute(
-            f"""INSERT INTO product (product_id, product_code, image_url, origin_price, price, min_price, name, product_name) VALUES ('{info['product_id']}', '{info['product_code']}', '{info['main_pic']}', {info['origin_price']}, {info['price']}, {info['min_price']}, '{info['name']}', '{info['product_name']}') ON CONFLICT (product_id) DO UPDATE SET image_url = '{info['main_pic']}', price = {info['price']}, min_price = {info['min_price']}, name = '{info['name']}', product_name = '{info['product_name']}' """
+            f"""INSERT INTO product (product_id, product_code, image_url, origin_price, price, min_price, name, product_name, last_notify_price) VALUES ('{info['product_id']}', '{info['product_code']}', '{info['main_pic']}', {info['origin_price']}, {info['price']}, {info['min_price']}, '{info['name']}', '{info['product_name']}', '{info['last_notify_price']}') ON CONFLICT (product_id) DO UPDATE SET image_url = '{info['main_pic']}', price = {info['price']}, min_price = {info['min_price']}, name = '{info['name']}', product_name = '{info['product_name']}', last_notify_price = '{info['last_notify_price']}' """
         ) 
         self.conn.commit()
         cursor.close()
