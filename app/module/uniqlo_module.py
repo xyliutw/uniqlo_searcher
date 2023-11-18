@@ -153,6 +153,12 @@ class UniqloModule:
         except Exception as e:
             print(e)
             self.send_notify(str(e))
+            errors = {
+                'uid' : params.get('uid'),
+                'subscription_amount': subscription_amount,
+                'product_id': params.get('product_id')
+            }
+            self.send_notify(errors)
             return "追蹤功能發生錯誤，請聯絡管理員"
         return "追蹤成功👍"
     
