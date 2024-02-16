@@ -42,8 +42,6 @@ def get_official_site_data(message):
 
     res = json.loads(r.text)
 
-    send_notify(res)
-
     if(res['resp'][2]['productSum'] == 0):
         return 0
     res = res['resp'][1][0]
@@ -68,6 +66,7 @@ send_notify('\n開始更新')
 time_start = time.time()
 for product in products:
     try:
+        time.sleep(1)
         step = 'Begin'
         product_id = product['product_id']
         print(f"==== {product_id} ====")
