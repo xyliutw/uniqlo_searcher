@@ -42,6 +42,8 @@ def get_official_site_data(message):
 
     res = json.loads(r.text)
 
+    send_notify(res)
+
     if(res['resp'][2]['productSum'] == 0):
         return 0
     res = res['resp'][1][0]
