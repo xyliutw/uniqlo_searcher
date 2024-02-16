@@ -1,1 +1,2 @@
 15 */6 * * * python /app/sync_price.py
+*/5 * * * * python /app/sync_price.py
