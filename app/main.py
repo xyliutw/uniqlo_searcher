@@ -107,6 +107,12 @@ def handle_message(event):
             user_id=user_id,
             message=str(event.message.text)
         ).get_subscription_list()
+    elif event.message.text.startswith("操作DB|"):
+        command = event.message.text.split("|")[1] 
+        reply_message = UniqloService(
+            user_id=user_id,
+            message=command
+        ).operate_db()
     elif event.message.text == "查價教學":
         reply_message = TextMessage(
             text = """🔥 小偵探這就來教大家掌握商品行蹤 🔥

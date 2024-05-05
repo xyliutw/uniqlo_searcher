@@ -115,3 +115,13 @@ class UniqloModel(PostgresManager):
         )      
         self.conn.commit()
         cursor.close()
+    
+    def operate_db(self, sql):
+        cursor = self.conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(
+            f"{sql}"
+        )      
+        self.conn.commit()
+        result = cursor.fetchall()
+        cursor.close()
+        return str(result)

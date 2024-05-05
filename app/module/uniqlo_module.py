@@ -351,3 +351,14 @@ class UniqloModule:
         res = res['resp'][1]
 
         return res
+
+    def operate_db(self):
+        try:
+            uniqlo_model = UniqloModel()
+            result = uniqlo_model.operate_db(self.message)
+            reply_message = TextSendMessage(text=result)
+        except Exception as e:
+            print(e)
+            self.send_notify(str(e))
+            return "操作錯誤，請聯絡管理員"
+        return reply_message

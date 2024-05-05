@@ -38,3 +38,7 @@ class UniqloService:
     def get_subscription_list(self):
         result = self.module.get_subscription_list()
         return result
+
+    def operate_db(self):
+        result = self.module.operate_db()
+        return result
