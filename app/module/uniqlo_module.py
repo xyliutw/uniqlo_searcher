@@ -60,35 +60,10 @@ class UniqloModule:
             }
         else:
             res = self.get_official_site_data(message)
-            if res == 0:
+            if res is None:
                 return 0, 0
-            if type(res) == list:
-                res = res[0]
-                info = {
-                    "origin_price": int(float(res['originPrice'])),
-                    "price": int(float(res['prices'][0])),
-                    "min_price": int(float(res['minPrice'])),
-                    "max_price": int(float(res['originPrice'])),
-                    "name": res['name'],
-                    "product_code": res['productCode'],
-                    "main_pic": f"{os.getenv('UNIQLO_IMAGE_BASE')}{res['mainPic']}",
-                    "product_name": res['productName'],
-                    "official_link": f"{os.getenv('UNIQLO_OFFICIAL_BASE')}{res['productCode']}",
-                    "subscription_url": f"{os.getenv('SUBSCRIPTION_URL')}?uid={user_id}&product_id={message}",
-                    "unsubscribe_url": f"{os.getenv('UNSUBSCRIBE_URL')}?uid={user_id}&product_id={message}",
-                    "product_id": message,
-                    "last_notify_price": int(float(res['prices'][0]))
-                }
-                low_price = self.get_product_low_price(info['product_code'])
-                if low_price is not None:
-                    low_price = int(float(low_price))
-                
-                    if( low_price < int(info['min_price'])):
-                        info['min_price'] = low_price
-
-                
-                uniqlo_model.add_product_data(info)
-            else:
+            if type(res) == dict:
+                res = res['productList'][0]
                 info = {
                     "origin_price": int(float(res['originPrice'])),
                     "price": int(float(res['prices'][0])),
@@ -315,11 +290,10 @@ class UniqloModule:
     
     def get_official_site_data(self, message):
         data = {
-            "url": f"{os.getenv('UNIQLO_SEARCH_URL_INSIDE')}{message}",
+            "url": f"/tw/zh_TW/search.html?description={message}",
             "pageInfo": {
                 "page": 1,
-                "pageSize": 24,
-                "withSideBar": "Y"
+                "pageSize": 24
             },
             "belongTo": "pc",
             "rank": "overall",
@@ -329,28 +303,36 @@ class UniqloModule:
             },
             "color": [],
             "size": [],
-            "season": [],
-            "material": [],
-            "sex": [],
             "identity": [],
-            "insiteDescription": "",
             "exist": [],
             "searchFlag": True,
-            "description": f"{message}"
+            "description": f"{message}",
+            "stockFilter": "warehouse"
         }
         header = {
             os.getenv('HEADER_1_K'): os.getenv('HEADER_1_V'),
             os.getenv('HEADER_2_K'): os.getenv('HEADER_2_V')
         } 
-        r = requests.post(os.getenv('UNIQLO_SEARCH_URL'), headers=header, json=data)
+        r = requests.post(os.getenv('UNIQLO_SEARCH_URL_NEW'), headers=header, json=data)
+
+        # 檢查 API 回應是否成功
+        if r.status_code != 200:
+            print(f"Request failed with status code {r.status_code}")
+            return None
 
         res = json.loads(r.text)
 
-        if(res['resp'][2]['productSum'] == 0):
-            return 0
-        res = res['resp'][1]
+        # 確保回應格式正確並且有產品數據
+        if 'resp' not in res:
+            print("Response format is not as expected or missing productSum.")
+            return None
 
-        return res
+        # 檢查產品總數
+        product_sum = res['resp'][0].get('productSum', 0)
+        if product_sum == 0:
+            return None
+
+        return res['resp'][0]
 
     def operate_db(self):
         try:

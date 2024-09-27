@@ -9,13 +9,11 @@ load_dotenv()
 
     
 def get_official_site_data(message):
-    search_url = os.getenv('UNIQLO_SEARCH_URL_INSIDE')
     data = {
-        "url": f"{search_url}{message}",
+        "url": f"/tw/zh_TW/search.html?description={message}",
         "pageInfo": {
             "page": 1,
-            "pageSize": 24,
-            "withSideBar": "Y"
+            "pageSize": 24
         },
         "belongTo": "pc",
         "rank": "overall",
@@ -25,28 +23,36 @@ def get_official_site_data(message):
         },
         "color": [],
         "size": [],
-        "season": [],
-        "material": [],
-        "sex": [],
         "identity": [],
-        "insiteDescription": "",
         "exist": [],
         "searchFlag": True,
-        "description": f"{message}"
+        "description": f"{message}",
+        "stockFilter": "warehouse"
     }
     header = {
         os.getenv('HEADER_1_K'): os.getenv('HEADER_1_V'),
         os.getenv('HEADER_2_K'): os.getenv('HEADER_2_V')
     } 
-    r = requests.post(os.getenv('UNIQLO_SEARCH_URL'), headers=header, json=data)
+    r = requests.post(os.getenv('UNIQLO_SEARCH_URL_NEW'), headers=header, json=data)
+
+    # 檢查 API 回應是否成功
+    if r.status_code != 200:
+        print(f"Request failed with status code {r.status_code}")
+        return None
 
     res = json.loads(r.text)
 
-    if(res['resp'][2]['productSum'] == 0):
-        return 0
-    res = res['resp'][1][0]
+    # 確保回應格式正確並且有產品數據
+    if 'resp' not in res:
+        print("Response format is not as expected or missing productSum.")
+        return None
 
-    return res
+    # 檢查產品總數
+    product_sum = res['resp'][0].get('productSum', 0)
+    if product_sum == 0:
+        return None
+
+    return res['resp'][0]
 
 def send_notify(message):
     headers = {
@@ -76,7 +82,7 @@ for product in products:
         if product_data_website:
             print("--- GET DB DATA ---")
             step = 'Get DB Data'
-            price = int(float(product_data_website['prices'][0]))
+            price = int(float(product_data_website['productList'][0]['prices'][0]))
             min_price_db = product['min_price']
             min_price = min_price_db if min_price_db < price else price
             print("--- UPDATE DB ---")
